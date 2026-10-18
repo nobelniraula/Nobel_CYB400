@@ -1,0 +1,86 @@
+<!--
+  Sysmon configuration tuned for malware behaviour analysis lab on Windows 10.
+  Based on common high-signal practices + filters for ransomware / RMM / injection patterns.
+  Schema version compatible with recent Sysmon.
+
+  Install:
+    Sysmon64.exe -accepteula -i sysmon-config-win10.xml
+
+  Reconfigure later:
+    Sysmon64.exe -c sysmon-config-win10.xml
+-->
+<Sysmon schemaversion="4.90">
+  <HashAlgorithms>SHA256,MD5,IMPHASH</HashAlgorithms>
+  <CheckRevocation/>
+  <EventFiltering>
+
+    <!-- Process Create (Event ID 1) - high value for malware -->
+    <RuleGroup name="ProcessCreate" groupRelation="or">
+      <ProcessCreate onmatch="include">
+        <ParentImage condition="contains any">cmd.exe;powershell.exe;pwsh.exe;wscript.exe;cscript.exe;mshta.exe;rundll32.exe;regsvr32.exe</ParentImage>
+        <Image condition="contains any">powershell.exe;pwsh.exe;cmd.exe;wscript.exe;cscript.exe;mshta.exe;rundll32.exe;regsvr32.exe;certutil.exe;bitsadmin.exe;curl.exe;wget.exe</Image>
+        <Image condition="contains any">vssadmin.exe;wbadmin.exe;bcdedit.exe;wmic.exe;cipher.exe</Image>
+        <Image condition="begin with">C:\Samples\</Image>
+        <CommandLine condition="contains any">-enc;-EncodedCommand;FromBase64String;IEX;Invoke-Expression;DownloadString;DownloadFile</CommandLine>
+      </ProcessCreate>
+      <ProcessCreate onmatch="exclude">
+        <Image condition="is">C:\Windows\System32\svchost.exe</Image>
+        <Image condition="is">C:\Windows\System32\Taskmgr.exe</Image>
+      </ProcessCreate>
+    </RuleGroup>
+
+    <!-- Network Connect (Event ID 3) -->
+    <RuleGroup name="NetworkConnect" groupRelation="or">
+      <NetworkConnect onmatch="include">
+        <Image condition="contains any">powershell.exe;cmd.exe;rundll32.exe;mshta.exe;wscript.exe;cscript.exe</Image>
+        <Image condition="begin with">C:\Samples\</Image>
+        <DestinationPort condition="is not">53</DestinationPort>
+      </NetworkConnect>
+    </RuleGroup>
+
+    <!-- File Create (Event ID 11) -->
+    <RuleGroup name="FileCreate" groupRelation="or">
+      <FileCreate onmatch="include">
+        <TargetFilename condition="contains any">.locked;.encrypted;.crypt;.pay;.onion;README;HOW_TO_DECRYPT;DECRYPT</TargetFilename>
+        <TargetFilename condition="begin with">C:\Samples\</TargetFilename>
+        <TargetFilename condition="begin with">C:\Users\</TargetFilename>
+        <Image condition="begin with">C:\Samples\</Image>
+      </FileCreate>
+    </RuleGroup>
+
+    <!-- Registry (Event ID 12/13/14) - persistence -->
+    <RuleGroup name="RegistryEvent" groupRelation="or">
+      <RegistryEvent onmatch="include">
+        <TargetObject condition="contains any">\CurrentVersion\Run;\CurrentVersion\RunOnce;\CurrentVersion\Policies\Explorer\Run</TargetObject>
+        <TargetObject condition="contains any">\Services\;\Image File Execution Options\;\AppInit_DLLs</TargetObject>
+        <TargetObject condition="contains">\Windows\CurrentVersion\Explorer\Shell Folders</TargetObject>
+        <Image condition="begin with">C:\Samples\</Image>
+      </RegistryEvent>
+    </RuleGroup>
+
+    <!-- CreateRemoteThread (Event ID 8) - injection -->
+    <RuleGroup name="CreateRemoteThread" groupRelation="or">
+      <CreateRemoteThread onmatch="include">
+        <SourceImage condition="begin with">C:\Samples\</SourceImage>
+        <TargetImage condition="contains any">explorer.exe;svchost.exe;lsass.exe;winlogon.exe</TargetImage>
+      </CreateRemoteThread>
+    </RuleGroup>
+
+    <!-- Process Access (Event ID 10) - credential dumping / injection -->
+    <RuleGroup name="ProcessAccess" groupRelation="or">
+      <ProcessAccess onmatch="include">
+        <TargetImage condition="contains">lsass.exe</TargetImage>
+        <SourceImage condition="begin with">C:\Samples\</SourceImage>
+      </ProcessAccess>
+    </RuleGroup>
+
+    <!-- Image Load (Event ID 7) -->
+    <RuleGroup name="ImageLoad" groupRelation="or">
+      <ImageLoad onmatch="include">
+        <Image condition="begin with">C:\Samples\</Image>
+        <ImageLoaded condition="contains any">vaultcli.dll;samlib.dll;cryptdll.dll</ImageLoaded>
+      </ImageLoad>
+    </RuleGroup>
+
+  </EventFiltering>
+</Sysmon>
